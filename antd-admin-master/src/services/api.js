@@ -1,4 +1,6 @@
-export default {
+let api = {}
+
+export default api = {
   queryRouteList: '/routes',
 
   queryUserInfo: '/user',
@@ -15,4 +17,12 @@ export default {
   queryPostList: '/posts',
 
   queryDashboard: '/dashboard',
+}
+
+
+export const loopBackapi = {
+  getCities : '/cities',
+  getSingleCity : '/cities/:id',
+  getFeeback : '/feebacks',
+  getSingleFeeback : '/feebacks/:id',
 }

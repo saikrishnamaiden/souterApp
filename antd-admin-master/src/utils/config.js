@@ -3,6 +3,7 @@ module.exports = {
   copyright: 'Ant Design Admin  ©2019 zuiidea',
   logoPath: '/logo.svg',
   apiPrefix: '/api/v1',
+  loopBackprefix: 'http://localhost:3050/api',
   fixedHeader: true, // sticky primary layout header
 
   /* Layout configuration, specify which layout to use for route. */

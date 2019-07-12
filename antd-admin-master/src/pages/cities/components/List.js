@@ -5,6 +5,7 @@ import { DropOption } from 'components'
 import { Trans, withI18n } from '@lingui/react'
 import Link from 'umi/link'
 import styles from './List.less'
+import { router } from 'utils';
 
 const { confirm } = Modal
 
@@ -22,6 +23,8 @@ class List extends PureComponent {
           onDeleteItem(record.id)
         },
       })
+    } else if (e.key === '3') {
+      router.push(`/cities/${record.id}`)
     }
   }
 
@@ -30,54 +33,30 @@ class List extends PureComponent {
 
     const columns = [
       {
-        title: <Trans>Avatar</Trans>,
-        dataIndex: 'avatar',
-        key: 'avatar',
-        width: 72,
-        fixed: 'left',
-        render: text => <Avatar style={{ marginLeft: 8 }} src={text} />,
-      },
-      {
-        title: <Trans>Name</Trans>,
+        title: 'name',
         dataIndex: 'name',
         key: 'name',
-        render: (text, record) => <Link to={`user/${record.id}`}>{text}</Link>,
       },
       {
-        title: <Trans>NickName</Trans>,
-        dataIndex: 'nickName',
-        key: 'nickName',
+        title: 'country',
+        dataIndex: 'country',
+        key: 'country',
       },
       {
-        title: <Trans>Age</Trans>,
-        dataIndex: 'age',
-        key: 'age',
+        title: 'scrapingUrl',
+        dataIndex: 'scrapingUrl',
+        key: 'scrapingUrl',
       },
       {
-        title: <Trans>Gender</Trans>,
-        dataIndex: 'isMale',
-        key: 'isMale',
-        render: text => <span>{text ? 'Male' : 'Female'}</span>,
+        title: 'scrapingWebsite',
+        dataIndex: 'scrapingWebsite',
+        key: 'scrapingWebsite',
       },
+    
       {
-        title: <Trans>Phone</Trans>,
-        dataIndex: 'phone',
-        key: 'phone',
-      },
-      {
-        title: <Trans>Email</Trans>,
-        dataIndex: 'email',
-        key: 'email',
-      },
-      {
-        title: <Trans>Address</Trans>,
-        dataIndex: 'address',
-        key: 'address',
-      },
-      {
-        title: <Trans>CreateTime</Trans>,
-        dataIndex: 'createTime',
-        key: 'createTime',
+        title: 'id',
+        dataIndex: 'id',
+        key: 'id',
       },
       {
         title: <Trans>Operation</Trans>,
@@ -90,6 +69,7 @@ class List extends PureComponent {
               menuOptions={[
                 { key: '1', name: i18n.t`Update` },
                 { key: '2', name: i18n.t`Delete` },
+                { key: '3', name: i18n.t`View this Record` },
               ]}
             />
           )
@@ -110,6 +90,11 @@ class List extends PureComponent {
         columns={columns}
         simple
         rowKey={record => record.id}
+        onRow={(record, rowIndex) => {
+          return {
+            onClick: event => {}, 
+          };
+        }}
       />
     )
   }

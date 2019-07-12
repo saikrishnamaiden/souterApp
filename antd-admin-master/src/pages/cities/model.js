@@ -9,10 +9,11 @@ const {
   removeUser,
   updateUser,
   removeUserList,
+  getCities
 } = api
 
 export default modelExtend(pageModel, {
-  namespace: 'user',
+  namespace: 'city',
 
   state: {
     currentItem: {},
@@ -24,10 +25,10 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup({ dispatch, history }) {
       history.listen(location => {
-        if (pathMatchRegexp('/user', location.pathname)) {
+        if (pathMatchRegexp('/cities', location.pathname)) {
           const payload = location.query || { page: 1, pageSize: 10 }
           dispatch({
-            type: 'query',
+            type: 'queryAllCity',
             payload,
           })
         }
@@ -36,13 +37,13 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
-    *query({ payload = {} }, { call, put }) {
-      const data = yield call(queryUserList, payload)
+    *queryAllCity({ payload = {} }, { call, put }) {
+      const data = yield call(getCities, payload)
       if (data) {
         yield put({
-          type: 'querySuccess',
+          type: 'queryAllCitySuccess',
           payload: {
-            list: data.data,
+            list: data.result.list,
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 10,
@@ -105,6 +106,18 @@ export default modelExtend(pageModel, {
 
     hideModal(state) {
       return { ...state, modalVisible: false }
+    },
+
+    queryAllCitySuccess(state, { payload }) {
+      const { list, pagination } = payload
+      return {
+        ...state,
+        list,
+        pagination: {
+          ...state.pagination,
+          ...pagination,
+        },
+      }
     },
   },
 })

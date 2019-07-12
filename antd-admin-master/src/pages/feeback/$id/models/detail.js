@@ -1,10 +1,10 @@
 import { pathMatchRegexp } from 'utils'
 import api from 'api'
 
-const { queryUser } = api
+let { getSingleFeeback } = api
 
 export default {
-  namespace: 'userDetail',
+  namespace: 'feebackDetail',
 
   state: {
     data: {},
@@ -13,23 +13,23 @@ export default {
   subscriptions: {
     setup({ dispatch, history }) {
       history.listen(({ pathname }) => {
-        const match = pathMatchRegexp('/user/:id', pathname)
+        const match = pathMatchRegexp('/feeback/:id', pathname)
         if (match) {
-          dispatch({ type: 'query', payload: { id: match[1] } })
+          dispatch({ type: 'querySingleFeeback', payload: { id: match[1] } })
         }
       })
     },
   },
 
   effects: {
-    *query({ payload }, { call, put }) {
-      const data = yield call(queryUser, payload)
-      const { success, message, status, ...other } = data
+    *querySingleFeeback({ payload }, { call, put }) {
+      const data = yield call(getSingleFeeback,payload)
+      const { success, result } = data
       if (success) {
         yield put({
-          type: 'querySuccess',
+          type: 'querySingleFeebackSuccess',
           payload: {
-            data: other,
+            data: result,
           },
         })
       } else {
@@ -39,7 +39,7 @@ export default {
   },
 
   reducers: {
-    querySuccess(state, { payload }) {
+    querySingleFeebackSuccess(state, { payload }) {
       const { data } = payload
       return {
         ...state,

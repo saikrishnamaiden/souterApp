@@ -11,8 +11,8 @@ import Filter from './components/Filter'
 import Modal from './components/Modal'
 
 @withI18n()
-@connect(({ user, loading }) => ({ user, loading }))
-class User extends PureComponent {
+@connect(({ feeback, loading }) => ({ feeback, loading }))
+class Feeback extends PureComponent {
   handleRefresh = newQuery => {
     const { location } = this.props
     const { query, pathname } = location
@@ -30,11 +30,11 @@ class User extends PureComponent {
   }
 
   handleDeleteItems = () => {
-    const { dispatch, user } = this.props
-    const { list, pagination, selectedRowKeys } = user
+    const { dispatch, feeback } = this.props
+    const { list, pagination, selectedRowKeys } = feeback
 
     dispatch({
-      type: 'user/multiDelete',
+      type: 'feeback/multiDelete',
       payload: {
         ids: selectedRowKeys,
       },
@@ -49,22 +49,22 @@ class User extends PureComponent {
   }
 
   get modalProps() {
-    const { dispatch, user, loading, i18n } = this.props
-    const { currentItem, modalVisible, modalType } = user
+    const { dispatch, feeback, loading, i18n } = this.props
+    const { currentItem, modalVisible, modalType } = feeback
 
     return {
       item: modalType === 'create' ? {} : currentItem,
       visible: modalVisible,
       destroyOnClose: true,
       maskClosable: false,
-      confirmLoading: loading.effects[`user/${modalType}`],
+      confirmLoading: loading.effects[`feeback/${modalType}`],
       title: `${
-        modalType === 'create' ? i18n.t`Create User` : i18n.t`Update User`
+        modalType === 'create' ? i18n.t`Create feeback` : i18n.t`Update feeback`
       }`,
       centered: true,
       onOk: data => {
         dispatch({
-          type: `user/${modalType}`,
+          type: `feeback/${modalType}`,
           payload: data,
         }).then(() => {
           this.handleRefresh()
@@ -72,19 +72,19 @@ class User extends PureComponent {
       },
       onCancel() {
         dispatch({
-          type: 'user/hideModal',
+          type: 'feeback/hideModal',
         })
       },
     }
   }
 
   get listProps() {
-    const { dispatch, user, loading } = this.props
-    const { list, pagination, selectedRowKeys } = user
+    const { dispatch, feeback, loading } = this.props
+    const { list, pagination, selectedRowKeys } = feeback
 
     return {
       dataSource: list,
-      loading: loading.effects['user/query'],
+      loading: loading.effects['feeback/query'],
       pagination,
       onChange: page => {
         this.handleRefresh({
@@ -94,7 +94,7 @@ class User extends PureComponent {
       },
       onDeleteItem: id => {
         dispatch({
-          type: 'user/delete',
+          type: 'feeback/delete',
           payload: id,
         }).then(() => {
           this.handleRefresh({
@@ -107,7 +107,7 @@ class User extends PureComponent {
       },
       onEditItem(item) {
         dispatch({
-          type: 'user/showModal',
+          type: 'feeback/showModal',
           payload: {
             modalType: 'update',
             currentItem: item,
@@ -118,7 +118,7 @@ class User extends PureComponent {
         selectedRowKeys,
         onChange: keys => {
           dispatch({
-            type: 'user/updateState',
+            type: 'feeback/updateState',
             payload: {
               selectedRowKeys: keys,
             },
@@ -143,7 +143,7 @@ class User extends PureComponent {
       },
       onAdd() {
         dispatch({
-          type: 'user/showModal',
+          type: 'feeback/showModal',
           payload: {
             modalType: 'create',
           },
@@ -153,8 +153,8 @@ class User extends PureComponent {
   }
 
   render() {
-    const { user } = this.props
-    const { selectedRowKeys } = user
+    const { feeback } = this.props
+    const { selectedRowKeys } = feeback
 
     return (
       <Page inner>
@@ -182,11 +182,11 @@ class User extends PureComponent {
   }
 }
 
-User.propTypes = {
-  user: PropTypes.object,
+Feeback.propTypes = {
+  feeback: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
   loading: PropTypes.object,
 }
 
-export default User
+export default Feeback

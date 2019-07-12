@@ -1,7 +1,7 @@
 import request from 'utils/request'
-import { apiPrefix } from 'utils/config'
+import { apiPrefix, loopBackprefix } from 'utils/config'
 
-import api from './api'
+import api, { loopBackapi } from './api'
 
 const gen = params => {
   let url = apiPrefix + params
@@ -22,9 +22,32 @@ const gen = params => {
   }
 }
 
+const loopBackGen = params => {
+  let url = loopBackprefix + params
+  let method = 'GET'
+
+  const paramsArray = params.split(' ')
+  if (paramsArray.length === 2) {
+    method = paramsArray[0]
+    url = loopBackprefix + paramsArray[1]
+  }
+
+  return function(data) {
+    return request({
+      url,
+      data,
+      method,
+    })
+  }
+}
+
 const APIFunction = {}
 for (const key in api) {
   APIFunction[key] = gen(api[key])
+}
+
+for (const key in loopBackapi) {
+  APIFunction[key] = loopBackGen(loopBackapi[key])
 }
 
 APIFunction.queryWeather = params => {
