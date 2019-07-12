@@ -23,6 +23,9 @@ export default api = {
 export const loopBackapi = {
   getCities : '/cities',
   getSingleCity : '/cities/:id',
+  deleteSingleCity : 'DELETE /cities/:id',
+  addCity : 'POST /cities',
+  updateCity : 'PUT /cities',
   getFeeback : '/feebacks',
   getSingleFeeback : '/feebacks/:id',
 }

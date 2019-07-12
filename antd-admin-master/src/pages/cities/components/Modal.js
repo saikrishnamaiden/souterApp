@@ -27,9 +27,8 @@ class CityModal extends PureComponent {
       }
       const data = {
         ...getFieldsValue(),
-        key: item.key,
-      }
-      data.address = data.address.join(' ')
+      };
+      if (item.id) data.id = item.id
       onOk(data)
     })
   }

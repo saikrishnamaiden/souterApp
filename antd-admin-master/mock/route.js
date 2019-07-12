@@ -29,7 +29,7 @@ const database = [
     id: '3',
     breadcrumbParentId: '2',
     menuParentId: '2',
-    name: 'cities',
+    name: 'CITIES',
     zh: {
       name: '用户管理'
     },
@@ -42,7 +42,7 @@ const database = [
     id: '4',
     menuParentId: '-1',
     breadcrumbParentId: '3',
-    name: 'cities Detail',
+    name: 'CITIES Detail',
     zh: {
       name: '用户详情'
     },
@@ -55,7 +55,7 @@ const database = [
     id: '5',
     breadcrumbParentId: '2',
     menuParentId: '2',
-    name: 'feeback',
+    name: 'FEEBACK',
     zh: {
       name: '用户管理'
     },
@@ -68,7 +68,7 @@ const database = [
     id: '6',
     menuParentId: '-1',
     breadcrumbParentId: '5',
-    name: 'feebacks Detail',
+    name: 'FEEBACK Detail',
     zh: {
       name: '用户详情'
     },

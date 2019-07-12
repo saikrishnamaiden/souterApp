@@ -9,7 +9,10 @@ const {
   removeUser,
   updateUser,
   removeUserList,
-  getCities
+  getCities,
+  addCity,
+  updateCity,
+  deleteSingleCity
 } = api
 
 export default modelExtend(pageModel, {
@@ -54,15 +57,11 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *delete({ payload }, { call, put, select }) {
-      const data = yield call(removeUser, { id: payload })
-      const { selectedRowKeys } = yield select(_ => _.user)
+    *delete({ payload }, { call, put }) {
+      const data = yield call(deleteSingleCity, { id: payload })
       if (data.success) {
         yield put({
           type: 'updateState',
-          payload: {
-            selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload),
-          },
         })
       } else {
         throw data
@@ -79,7 +78,7 @@ export default modelExtend(pageModel, {
     },
 
     *create({ payload }, { call, put }) {
-      const data = yield call(createUser, payload)
+      const data = yield call(addCity, payload)
       if (data.success) {
         yield put({ type: 'hideModal' })
       } else {
@@ -87,10 +86,8 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *update({ payload }, { select, call, put }) {
-      const id = yield select(({ user }) => user.currentItem.id)
-      const newUser = { ...payload, id }
-      const data = yield call(updateUser, newUser)
+    *update({ payload }, { call, put }) {
+      const data = yield call(updateCity, payload)
       if (data.success) {
         yield put({ type: 'hideModal' })
       } else {
