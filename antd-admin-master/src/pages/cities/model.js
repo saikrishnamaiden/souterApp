@@ -4,10 +4,6 @@ import api from 'api'
 import { pageModel } from 'utils/model'
 
 const {
-  queryUserList,
-  createUser,
-  removeUser,
-  updateUser,
   removeUserList,
   getCities,
   addCity,
