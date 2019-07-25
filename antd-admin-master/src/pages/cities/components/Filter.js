@@ -74,18 +74,18 @@ class Filter extends Component {
   }
 
   render() {
-    const { onAdd, filter, form, i18n } = this.props
+    const { onAdd, filterValues, form, i18n } = this.props
     const { getFieldDecorator } = form
-    const { name, address } = filter
+    const { name, address } = filterValues
 
     let initialCreateTime = []
-    if (filter.createTime && filter.createTime[0]) {
-      initialCreateTime[0] = moment(filter.createTime[0])
+    if (filterValues.createTime && filterValues.createTime[0]) {
+      initialCreateTime[0] = moment(filterValues.createTime[0])
     }
-    if (filter.createTime && filter.createTime[1]) {
-      initialCreateTime[1] = moment(filter.createTime[1])
+    if (filterValues.createTime && filterValues.createTime[1]) {
+      initialCreateTime[1] = moment(filterValues.createTime[1])
     }
-
+    
     return (
       <Row gutter={24}>
         <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
