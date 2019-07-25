@@ -4,15 +4,15 @@ import api from 'api'
 import { pageModel } from 'utils/model'
 
 const {
-  addFeeback,
-  deleteSingleFeeback,
-  updateFeeback,
   removeUserList,
-  getFeeback
+  getEvent,
+  addEvent,
+  updateEvent,
+  deleteSingleEvent
 } = api
 
 export default modelExtend(pageModel, {
-  namespace: 'feeback',
+  namespace: 'event',
 
   state: {
     currentItem: {},
@@ -24,10 +24,10 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup({ dispatch, history }) {
       history.listen(location => {
-        if (pathMatchRegexp('/feeback', location.pathname)) {
+        if (pathMatchRegexp('/event', location.pathname)) {
           const payload = location.query || { page: 1, pageSize: 10 }
           dispatch({
-            type: 'queryFeeback',
+            type: 'queryAllEvent',
             payload,
           })
         }
@@ -36,11 +36,11 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
-    *queryFeeback({ payload = {} }, { call, put }) {
-      const data = yield call(getFeeback, payload)
+    *queryAllEvent({ payload = {} }, { call, put }) {
+      const data = yield call(getEvent, payload)
       if (data) {
         yield put({
-          type: 'queryAllFeebackSuccess',
+          type: 'queryAllEventSuccess',
           payload: {
             list: data.result.list,
             pagination: {
@@ -54,7 +54,7 @@ export default modelExtend(pageModel, {
     },
 
     *delete({ payload }, { call, put }) {
-      const data = yield call(deleteSingleFeeback, { id: payload })
+      const data = yield call(deleteSingleEvent, { id: payload })
       if (data.success) {
         yield put({
           type: 'updateState',
@@ -64,7 +64,7 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *multiDelete({ payload }, {call, put}) {
+    *multiDelete({ payload }, { call, put }) {
       const data = yield call(removeUserList, payload)
       if (data.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: [] } })
@@ -73,8 +73,8 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *create({ payload }, {call, put}) {
-      const data = yield call(addFeeback, payload)
+    *create({ payload }, { call, put }) {
+      const data = yield call(addEvent, payload)
       if (data.success) {
         yield put({ type: 'hideModal' })
       } else {
@@ -83,7 +83,7 @@ export default modelExtend(pageModel, {
     },
 
     *update({ payload }, { call, put }) {
-      const data = yield call(updateFeeback, payload)
+      const data = yield call(updateEvent, payload)
       if (data.success) {
         yield put({ type: 'hideModal' })
       } else {
@@ -91,7 +91,7 @@ export default modelExtend(pageModel, {
       }
     },
   },
- 
+
   reducers: {
     showModal(state, { payload }) {
       return { ...state, ...payload, modalVisible: true }
@@ -101,7 +101,7 @@ export default modelExtend(pageModel, {
       return { ...state, modalVisible: false }
     },
 
-    queryAllFeebackSuccess(state, { payload }) {
+    queryAllEventSuccess(state, { payload }) {
       const { list, pagination } = payload
       return {
         ...state,
@@ -112,6 +112,5 @@ export default modelExtend(pageModel, {
         },
       }
     },
-    
   },
 })

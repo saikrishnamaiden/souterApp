@@ -4,15 +4,15 @@ import api from 'api'
 import { pageModel } from 'utils/model'
 
 const {
-  addFeeback,
-  deleteSingleFeeback,
-  updateFeeback,
+  addComment,
+  deleteSingleComment,
+  updateComment,
   removeUserList,
-  getFeeback
+  getComment
 } = api
 
 export default modelExtend(pageModel, {
-  namespace: 'feeback',
+  namespace: 'comment',
 
   state: {
     currentItem: {},
@@ -24,10 +24,10 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup({ dispatch, history }) {
       history.listen(location => {
-        if (pathMatchRegexp('/feeback', location.pathname)) {
+        if (pathMatchRegexp('/comment', location.pathname)) {
           const payload = location.query || { page: 1, pageSize: 10 }
           dispatch({
-            type: 'queryFeeback',
+            type: 'queryComment',
             payload,
           })
         }
@@ -36,11 +36,11 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
-    *queryFeeback({ payload = {} }, { call, put }) {
-      const data = yield call(getFeeback, payload)
+    *queryComment({ payload = {} }, { call, put }) {
+      const data = yield call(getComment, payload)
       if (data) {
         yield put({
-          type: 'queryAllFeebackSuccess',
+          type: 'queryAllCommentSuccess',
           payload: {
             list: data.result.list,
             pagination: {
@@ -54,7 +54,7 @@ export default modelExtend(pageModel, {
     },
 
     *delete({ payload }, { call, put }) {
-      const data = yield call(deleteSingleFeeback, { id: payload })
+      const data = yield call(deleteSingleComment, { id: payload })
       if (data.success) {
         yield put({
           type: 'updateState',
@@ -74,7 +74,7 @@ export default modelExtend(pageModel, {
     },
 
     *create({ payload }, {call, put}) {
-      const data = yield call(addFeeback, payload)
+      const data = yield call(addComment, payload)
       if (data.success) {
         yield put({ type: 'hideModal' })
       } else {
@@ -83,7 +83,7 @@ export default modelExtend(pageModel, {
     },
 
     *update({ payload }, { call, put }) {
-      const data = yield call(updateFeeback, payload)
+      const data = yield call(updateComment, payload)
       if (data.success) {
         yield put({ type: 'hideModal' })
       } else {
@@ -101,7 +101,7 @@ export default modelExtend(pageModel, {
       return { ...state, modalVisible: false }
     },
 
-    queryAllFeebackSuccess(state, { payload }) {
+    queryAllCommentSuccess(state, { payload }) {
       const { list, pagination } = payload
       return {
         ...state,

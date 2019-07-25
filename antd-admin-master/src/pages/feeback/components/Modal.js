@@ -27,13 +27,11 @@ class FeebackModal extends PureComponent {
       }
       const data = {
         ...getFieldsValue(),
-        key: item.key,
-      }
-      data.address = data.address.join(' ')
+      };
+      if (item.id) data.id = item.id
       onOk(data)
     })
   }
-
   render() {
     const { item = {}, onOk, form, i18n, ...modalProps } = this.props
     const { getFieldDecorator } = form
@@ -41,9 +39,9 @@ class FeebackModal extends PureComponent {
     return (
       <Modal {...modalProps} onOk={this.handleOk}>
         <Form layout="horizontal">
-          <FormItem label={i18n.t`Name`} hasFeedback {...formItemLayout}>
-            {getFieldDecorator('name', {
-              initialValue: item.name,
+          <FormItem label={i18n.t`placeId`} hasFeedback {...formItemLayout}>
+            {getFieldDecorator('placeId', {
+              initialValue: item.placeId,
               rules: [
                 {
                   required: true,
@@ -51,9 +49,9 @@ class FeebackModal extends PureComponent {
               ],
             })(<Input />)}
           </FormItem>
-          <FormItem label={i18n.t`country`} hasFeedback {...formItemLayout}>
-            {getFieldDecorator('country', {
-              initialValue: item.country,
+          <FormItem label={i18n.t`userId`} hasFeedback {...formItemLayout}>
+            {getFieldDecorator('userId', {
+              initialValue: item.userId,
               rules: [
                 {
                   required: true,
@@ -61,19 +59,9 @@ class FeebackModal extends PureComponent {
               ],
             })(<Input />)}
           </FormItem>
-          <FormItem label={i18n.t`scrapingUrl`} hasFeedback {...formItemLayout}>
-            {getFieldDecorator('scrapingUrl', {
-              initialValue: item.scrapingUrl,
-              rules: [
-                {
-                  required: true,
-                },
-              ],
-            })(<Input />)}
-          </FormItem>
-          <FormItem label={i18n.t`scrapingWebsite`} hasFeedback {...formItemLayout}>
-            {getFieldDecorator('scrapingWebsite', {
-              initialValue: item.scrapingWebsite,
+          <FormItem label={i18n.t`timestamp`} hasFeedback {...formItemLayout}>
+            {getFieldDecorator('timestamp', {
+              initialValue: item.timestamp,
               rules: [
                 {
                   required: true,
