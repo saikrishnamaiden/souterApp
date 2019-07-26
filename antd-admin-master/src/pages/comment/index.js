@@ -7,12 +7,20 @@ import { withI18n } from '@lingui/react'
 import { Page } from 'components'
 import { stringify } from 'qs'
 import List from './components/List'
+import SubCommnetsList from './components/SubCommnetsList'
 import Filter from './components/Filter'
 import Modal from './components/Modal'
+import { SelectionTypes } from 'maidengrid'
+import { Tabs } from 'antd'
+
+const { TabPane } = Tabs
 
 @withI18n()
 @connect(({ comment, loading }) => ({ comment, loading }))
 class Comment extends PureComponent {
+  state={
+    selectedRowKey : []
+  }
   handleRefresh = newQuery => {
     const { location } = this.props
     const { query, pathname } = location
@@ -86,6 +94,16 @@ class Comment extends PureComponent {
       dataSource: list,
       loading: loading.effects['comment/query'],
       pagination,
+      SelectionType: SelectionTypes.Single,
+      onRowChange: (selectedRowKey) => {
+        const id = list[selectedRowKey[0]].id
+        dispatch({
+          type: `comment/queryCommentsSubcomments`,
+          payload: { id },
+        })
+        
+        this.setState({selectedRowKey})
+      }, 
       onChange: page => {
         this.handleRefresh({
           page: page.current,
@@ -114,17 +132,6 @@ class Comment extends PureComponent {
           },
         })
       },
-      rowSelection: {
-        selectedRowKeys,
-        onChange: keys => {
-          dispatch({
-            type: 'comment/updateState',
-            payload: {
-              selectedRowKeys: keys,
-            },
-          })
-        },
-      },
     }
   }
 
@@ -152,11 +159,56 @@ class Comment extends PureComponent {
     }
   }
 
-  render() {debugger
+  get SubCommentsList() {
+    const { dispatch, comment, loading } = this.props
+    const { subCommnetsList, pagination, selectedRowKeys } = comment
+
+    return {
+      dataSource: subCommnetsList,
+      loading: loading.effects['comment/query'],
+      pagination,
+      SelectionType: SelectionTypes.Single,
+      onRowChange: (selectedRowKey) => {
+        this.setState({selectedRowKey})
+      }, 
+      onChange: page => {
+        this.handleRefresh({
+          page: page.current,
+          pageSize: page.pageSize,
+        })
+      },
+      onDeleteItem: id => {
+        dispatch({
+          type: 'comment/delete',
+          payload: id,
+        }).then(() => {
+          this.handleRefresh({
+            page:
+              list.length === 1 && pagination.current > 1
+                ? pagination.current - 1
+                : pagination.current,
+          })
+        })
+      },
+      onEditItem(item) {
+        dispatch({
+          type: 'comment/showModal',
+          payload: {
+            modalType: 'update',
+            currentItem: item,
+          },
+        })
+      },
+    }
+  }
+
+  render() {
     const { comment } = this.props
     const { selectedRowKeys } = comment
-
+    const { selectedRowKey } = this.state
+    
     return (
+      <>
       <Page inner>
         <Filter {...this.filterProps} />
         {selectedRowKeys.length > 0 && (
@@ -178,6 +230,18 @@ class Comment extends PureComponent {
         <List {...this.listProps} />
         <Modal {...this.modalProps} />
       </Page>
+      <br/>
+      {selectedRowKey && selectedRowKey.length == 1 && <Page inner>
+      <Tabs>
+          <TabPane
+            tab='SubComment'
+            key='1'
+          >
+            <SubCommnetsList {...this.SubCommentsList} />
+          </TabPane>
+        </Tabs>
+      </Page>}
+      </>
     )
   }
 }

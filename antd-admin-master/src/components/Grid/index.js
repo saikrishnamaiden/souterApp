@@ -16,9 +16,14 @@ const Table = props => {
       columns={columns}
       gridPreferences={JSON.stringify(gridPreferences)}
       afterDataLoad={afterData}
+      size={'small'}
       {...restProps}
     />
   )
+}
+
+Table.defaultProps = {
+  afterDataLoad : () => {}
 }
 
 export { Table }

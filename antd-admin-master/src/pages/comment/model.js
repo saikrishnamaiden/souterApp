@@ -8,7 +8,8 @@ const {
   deleteSingleComment,
   updateComment,
   removeUserList,
-  getComment
+  getComment,
+  getCommentsSubComments
 } = api
 
 export default modelExtend(pageModel, {
@@ -48,6 +49,18 @@ export default modelExtend(pageModel, {
               pageSize: Number(payload.pageSize) || 10,
               total: data.total,
             },
+          },
+        })
+      }
+    },
+
+    *queryCommentsSubcomments({payload}, { call, put }) {
+      const data = yield call(getCommentsSubComments, payload)
+      if (data) {
+        yield put({
+          type: 'queryAllCommentSubCommentsSuccess',
+          payload: {
+            list: data.result.list,
           },
         })
       }
@@ -112,6 +125,14 @@ export default modelExtend(pageModel, {
         },
       }
     },
+
+    queryAllCommentSubCommentsSuccess(state, { payload }) {
+      const { list } = payload
+      return {
+        ...state,
+        subCommnetsList : list,
+      }
+    }
     
   },
 })

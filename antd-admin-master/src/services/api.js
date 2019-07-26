@@ -51,4 +51,5 @@ export const loopBackapi = {
   deleteSingleSubComments : 'DELETE /subcomments/:id',
   addSubComments : 'POST /subcomments',
   updateSubComments : 'PUT /subcomments',
+  getCommentsSubComments: '/comments/:id/subCommentData'
 }
