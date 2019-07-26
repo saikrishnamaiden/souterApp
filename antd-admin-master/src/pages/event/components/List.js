@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal, Avatar } from 'antd'
+import {Modal, Avatar } from 'antd'
 import { DropOption } from 'components'
 import { Trans, withI18n } from '@lingui/react'
 import Link from 'umi/link'
 import styles from './List.less'
 import { router } from 'utils';
-
+import { Table } from '../../../components/Grid'
 const { confirm } = Modal
 
 @withI18n()
