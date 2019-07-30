@@ -10,6 +10,7 @@ import List from './components/List'
 import SubCommnetsList from './components/SubCommnetsList'
 import Filter from './components/Filter'
 import Modal from './components/Modal'
+import SubCommentsModal from './components/SubCommentsModal'
 import { SelectionTypes } from 'maidengrid'
 import { Tabs } from 'antd'
 
@@ -132,6 +133,15 @@ class Comment extends PureComponent {
           },
         })
       },
+      createSubCommentItem(item) {
+        dispatch({
+          type: 'comment/showSubCommentModal',
+          payload: {
+            modalType: 'update',
+            currentItem: { id: item.id },
+          },
+        })
+      },
     }
   }
 
@@ -159,9 +169,9 @@ class Comment extends PureComponent {
     }
   }
 
-  get SubCommentsList() {
+  get subCommentsList() {
     const { dispatch, comment, loading } = this.props
-    const { subCommnetsList, pagination, selectedRowKeys } = comment
+    const { subCommnetsList, pagination, selectedRowKeys, list } = comment
 
     return {
       dataSource: subCommnetsList,
@@ -202,6 +212,44 @@ class Comment extends PureComponent {
     }
   }
 
+  get subCommentsModalProps() {
+    const { dispatch, comment, loading, i18n } = this.props
+    const { currentItem, subCommentModalVisible, modalType, list } = comment
+    const { selectedRowKey } = this.state
+
+    return {
+      item: currentItem,
+      visible: subCommentModalVisible,
+      destroyOnClose: true,
+      maskClosable: false,
+      confirmLoading: loading.effects[`comment/${modalType}`],
+      title: `${
+        modalType === 'create' ? i18n.t`Create comment` : i18n.t`Update comment`
+      }`,
+      centered: true,
+      onOk: data => {
+        dispatch({
+          type: `comment/addSubComment`,
+          payload: data,
+        }).then(() => { 
+          if(selectedRowKey.length === 1){
+            const id = list[selectedRowKey[0]].id
+            dispatch({
+              type: `comment/queryCommentsSubcomments`,
+              payload: { id },
+            })
+          }
+          // this.handleRefresh()
+        })
+      },
+      onCancel() {
+        dispatch({
+          type: 'comment/hideSubCommentModal',
+        })
+      },
+    }
+  }
+
   render() {
     const { comment } = this.props
     const { selectedRowKeys } = comment
@@ -229,18 +277,21 @@ class Comment extends PureComponent {
         )}
         <List {...this.listProps} />
         <Modal {...this.modalProps} />
+        <SubCommentsModal {...this.subCommentsModalProps} />
       </Page>
       <br/>
-      {selectedRowKey && selectedRowKey.length == 1 && <Page inner>
-      <Tabs>
-          <TabPane
-            tab='SubComment'
-            key='1'
-          >
-            <SubCommnetsList {...this.SubCommentsList} />
-          </TabPane>
-        </Tabs>
-      </Page>}
+      {selectedRowKey && selectedRowKey.length == 1 && 
+        <Page inner>
+          <Tabs>
+            <TabPane
+              tab='SubComment'
+              key='1'
+            >
+              <SubCommnetsList {...this.subCommentsList} />
+            </TabPane>
+          </Tabs>
+        </Page>
+      }
       </>
     )
   }

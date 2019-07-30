@@ -13,7 +13,7 @@ const { confirm } = Modal
 @withI18n()
 class List extends PureComponent {
   handleMenuClick = (record, e) => {
-    const { onDeleteItem, onEditItem, i18n } = this.props
+    const { onDeleteItem, onEditItem, i18n, createSubCommentItem } = this.props
 
     if (e.key === '1') {
       onEditItem(record)
@@ -26,6 +26,8 @@ class List extends PureComponent {
       })
     } else if (e.key === '3') {
       router.push(`/comment/${record.id}`)
+    } else if (e.key === '4'){
+      createSubCommentItem(record)
     }
   }
 
@@ -85,14 +87,16 @@ class List extends PureComponent {
         title: <Trans>Operation</Trans>,
         key: 'operation',
         fixed: 'right',
+        width: 50,
         render: (text, record) => {
           return (
             <DropOption
-              onMenuClick={e => this.handleMenuClick(record, e)}
+              onMenuClick={e => {this.handleMenuClick(record, e)}}
               menuOptions={[
                 { key: '1', name: i18n.t`Update` },
                 { key: '2', name: i18n.t`Delete` },
                 { key: '3', name: i18n.t`View this Record` },
+                { key: '4', name: i18n.t`Add Sub Comment` },
               ]}
             />
           )

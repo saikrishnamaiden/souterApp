@@ -9,7 +9,8 @@ const {
   updateComment,
   removeUserList,
   getComment,
-  getCommentsSubComments
+  getCommentsSubComments,
+  addCommentsSubComments,
 } = api
 
 export default modelExtend(pageModel, {
@@ -20,6 +21,7 @@ export default modelExtend(pageModel, {
     modalVisible: false,
     modalType: 'create',
     selectedRowKeys: [],
+    subCommentModalVisible: false,
   },
 
   subscriptions: {
@@ -40,6 +42,9 @@ export default modelExtend(pageModel, {
     *queryComment({ payload = {} }, { call, put }) {
       const data = yield call(getComment, payload)
       if (data) {
+        for(const item in data.result.list){
+          data.result.list[item].key = parseInt(item)
+        }
         yield put({
           type: 'queryAllCommentSuccess',
           payload: {
@@ -103,6 +108,15 @@ export default modelExtend(pageModel, {
         throw data
       }
     },
+
+    *addSubComment({ payload }, { call, put }) {
+      const data = yield call(addCommentsSubComments,payload)
+      if (data.success) {
+        yield put({ type: 'hideSubCommentModal', payload: data.result })
+      } else {
+        throw data
+      }
+    }
   },
  
   reducers: {
@@ -112,6 +126,16 @@ export default modelExtend(pageModel, {
 
     hideModal(state) {
       return { ...state, modalVisible: false }
+    },
+
+    showSubCommentModal(state, { payload }) {
+      return { ...state, ...payload, subCommentModalVisible: true }
+    },
+
+    hideSubCommentModal(state, { payload }) {
+      // const subCommnetsList = state.subCommnetsList
+      // if (subCommnetsList && payload && subCommnetsList['0'].commentId === payload.commentId) subCommnetsList = { ...subCommnetsList, ...payload }
+      return { ...state, subCommentModalVisible: false }
     },
 
     queryAllCommentSuccess(state, { payload }) {

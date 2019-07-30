@@ -79,6 +79,7 @@ class List extends PureComponent {
           title: <Trans>Operation</Trans>,
           key: 'operation',
           fixed: 'right',
+          width: 50,
           render: (text, record) => {
             return (
               <DropOption

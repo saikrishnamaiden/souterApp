@@ -34,7 +34,7 @@ export default function request(options) {
   }
 
   options.url = url
-  options.params = cloneData
+  options.data = cloneData
   options.cancelToken = new CancelToken(cancel => {
     window.cancelRequest.set(Symbol(Date.now()), {
       pathname: window.location.pathname,
