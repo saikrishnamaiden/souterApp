@@ -14,7 +14,7 @@ import Modal from './components/Modal'
 @connect(({ zipcode, loading }) => ({ zipcode, loading }))
 class Zipcode extends PureComponent {
   state={
-    filterValue : ''
+    filterValue : '601'
   }
   handleRefresh = newQuery => {
     const { location } = this.props
@@ -82,16 +82,16 @@ class Zipcode extends PureComponent {
   }
 
   get listProps() {
-    const {filtervalue}=this.state
+    const { filterValue }=this.state
     const { dispatch, zipcode, loading } = this.props
     const { list, pagination, selectedRowKeys } = zipcode
-
+    debugger
     return {
       dataSource: list,
       loading: loading.effects['zipcode/query'],
       pagination,
-      filtervalue,
-      afterDataLoad: (value) => this.setState({ filterValue: value }),
+      filterValue,
+      afterDataLoad: (value) => this.setState({ filterValue: value.equalValue }),
       onChange: page => {
         this.handleRefresh({
           page: page.current,

@@ -36,7 +36,7 @@ class List extends PureComponent {
         title: 'zipcode',
         dataIndex: 'zipcode',
         key: 'zipcode',
-       
+        type: 'int'
       },
       {
         title: 'totalPopulation',
