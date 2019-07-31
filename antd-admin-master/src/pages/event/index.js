@@ -13,6 +13,9 @@ import Modal from './components/Modal'
 @withI18n()
 @connect(({ event, loading }) => ({ event, loading }))
 class Event extends PureComponent {
+  state={
+    filterValue : ''
+  }
   handleRefresh = newQuery => {
     const { location } = this.props
     const { query, pathname } = location
@@ -79,6 +82,7 @@ class Event extends PureComponent {
   }
 
   get listProps() {
+    const { filterValue } = this.state
     const { dispatch, event, loading } = this.props
     const { list, pagination, selectedRowKeys } = event
 
@@ -86,6 +90,8 @@ class Event extends PureComponent {
       dataSource: list,
       loading: loading.effects['event/query'],
       pagination,
+      filterValue,
+      afterDataLoad:(value)=>this.setState({filterValue:value}),
       onChange: page => {
         this.handleRefresh({
           page: page.current,
@@ -129,18 +135,18 @@ class Event extends PureComponent {
   }
 
   get filterProps() {
+    const { filterValue } = this.state
     const { location, dispatch } = this.props
     const { query } = location
 
     return {
-      filter: {
-        ...query,
+      filterValues: {
+        name:filterValue
+      
       },
-      onFilterChange: value => {
-        this.handleRefresh({
-          ...value,
-        })
-      },
+      onFilterChange: filterValues => 
+      this.setState({ filterValue: filterValues.name }),
+          
       onAdd() {
         dispatch({
           type: 'event/showModal',

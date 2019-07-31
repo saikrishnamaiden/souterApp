@@ -13,6 +13,9 @@ import Modal from './components/Modal'
 @withI18n()
 @connect(({ feeback, loading }) => ({ feeback, loading }))
 class Feeback extends PureComponent {
+  state={
+    filterValue : ''
+  }
   handleRefresh = newQuery => {
     const { location } = this.props
     const { query, pathname } = location
@@ -79,6 +82,7 @@ class Feeback extends PureComponent {
   }
 
   get listProps() {
+    const { filterValue } = this.state
     const { dispatch, feeback, loading } = this.props
     const { list, pagination, selectedRowKeys } = feeback
 
@@ -86,6 +90,8 @@ class Feeback extends PureComponent {
       dataSource: list,
       loading: loading.effects['feeback/query'],
       pagination,
+      filterValue,
+      afterDataLoad: (value) => this.setState({ filterValue: value }),
       onChange: page => {
         this.handleRefresh({
           page: page.current,
@@ -129,18 +135,16 @@ class Feeback extends PureComponent {
   }
 
   get filterProps() {
+    const { filterValue } = this.state
     const { location, dispatch } = this.props
     const { query } = location
 
     return {
-      filter: {
-        ...query,
+      filterValues: {
+        name: filterValue
       },
-      onFilterChange: value => {
-        this.handleRefresh({
-          ...value,
-        })
-      },
+      onFilterChange: filterValues => 
+        this.setState({ filterValue: filterValues.name }),
       onAdd() {
         dispatch({
           type: 'feeback/showModal',

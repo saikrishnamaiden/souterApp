@@ -14,13 +14,14 @@ import SubCommentsModal from './components/SubCommentsModal'
 import { SelectionTypes } from 'maidengrid'
 import { Tabs } from 'antd'
 
-const { TabPane } = Tabs
 
+const { TabPane } = Tabs
 @withI18n()
 @connect(({ comment, loading }) => ({ comment, loading }))
 class Comment extends PureComponent {
   state={
-    selectedRowKey : []
+    selectedRowKey : [],
+    filterValue : ''
   }
   handleRefresh = newQuery => {
     const { location } = this.props
@@ -88,6 +89,7 @@ class Comment extends PureComponent {
   }
 
   get listProps() {
+    const { filterValue } = this.state
     const { dispatch, comment, loading } = this.props
     const { list, pagination, selectedRowKeys } = comment
 
@@ -95,6 +97,8 @@ class Comment extends PureComponent {
       dataSource: list,
       loading: loading.effects['comment/query'],
       pagination,
+      filterValue,
+      afterDataLoad: (value) => this.setState({ filterValue: value }),
       SelectionType: SelectionTypes.Single,
       onRowChange: (selectedRowKey) => {
         const id = list[selectedRowKey[0]].id
@@ -133,7 +137,7 @@ class Comment extends PureComponent {
           },
         })
       },
-      createSubCommentItem(item) {
+      createSubCommentItem(item) {debugger
         dispatch({
           type: 'comment/showSubCommentModal',
           payload: {
@@ -146,18 +150,16 @@ class Comment extends PureComponent {
   }
 
   get filterProps() {
+    const { filterValue } = this.state
     const { location, dispatch } = this.props
     const { query } = location
 
     return {
-      filter: {
-        ...query,
+      filterValues: {
+        name: filterValue
       },
-      onFilterChange: value => {
-        this.handleRefresh({
-          ...value,
-        })
-      },
+      onFilterChange: filterValues => 
+        this.setState({ filterValue: filterValues.name }),
       onAdd() {
         dispatch({
           type: 'comment/showModal',
