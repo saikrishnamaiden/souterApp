@@ -4,7 +4,7 @@ const Table = props => {
   const { dataSource, columns, filterValue, afterDataLoad, ...restProps } = props
   const gridPreferences = { filterInfo: [], sortInfo: [] }
   const filterBy = columns[0].dataIndex
-  if (filterBy) gridPreferences.filterInfo.push({ filterBy, filterValue })
+  if (filterBy && filterValue && filterValue !== '') gridPreferences.filterInfo.push({ filterBy, filterValue })
   const afterData = ({ start, limit, sortInfo, filterInfo }) => {
       for (let item of filterInfo){
           if (item.filterBy == filterBy) afterDataLoad(item.filterValue)

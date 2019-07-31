@@ -11,6 +11,8 @@ const {
   getComment,
   getCommentsSubComments,
   addCommentsSubComments,
+  deleteSingleSubComments,
+  updateSubComments,
 } = api
 
 export default modelExtend(pageModel, {
@@ -82,6 +84,18 @@ export default modelExtend(pageModel, {
       }
     },
 
+    *deleteSubComment({ payload }, { call, put }) {
+      const data = yield call(deleteSingleSubComments, { id: payload.id })
+      if (data.success) {
+        yield put({
+          type: 'queryCommentsSubcomments',
+          payload: { id : payload.commentId }
+        })
+      } else {
+        throw data
+      }
+    },
+
     *multiDelete({ payload }, {call, put}) {
       const data = yield call(removeUserList, payload)
       if (data.success) {
@@ -109,10 +123,20 @@ export default modelExtend(pageModel, {
       }
     },
 
+    *updateSubComment({ payload }, { call, put }) {debugger
+      const data = yield call(updateSubComments, payload)
+      debugger
+      if (data.success) {
+        yield put({ type: 'hideSubCommentModal' })
+      } else {
+        throw data
+      }
+    },
+
     *addSubComment({ payload }, { call, put }) {
       const data = yield call(addCommentsSubComments,payload)
       if (data.success) {
-        yield put({ type: 'hideSubCommentModal', payload: data.result })
+        yield put({ type: 'hideSubCommentModal' })
       } else {
         throw data
       }
@@ -132,9 +156,7 @@ export default modelExtend(pageModel, {
       return { ...state, ...payload, subCommentModalVisible: true }
     },
 
-    hideSubCommentModal(state, { payload }) {
-      // const subCommnetsList = state.subCommnetsList
-      // if (subCommnetsList && payload && subCommnetsList['0'].commentId === payload.commentId) subCommnetsList = { ...subCommnetsList, ...payload }
+    hideSubCommentModal(state) {
       return { ...state, subCommentModalVisible: false }
     },
 

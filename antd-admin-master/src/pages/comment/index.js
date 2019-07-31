@@ -137,11 +137,11 @@ class Comment extends PureComponent {
           },
         })
       },
-      createSubCommentItem(item) {debugger
+      createSubCommentItem(item) {
         dispatch({
           type: 'comment/showSubCommentModal',
           payload: {
-            modalType: 'update',
+            modalType: 'create',
             currentItem: { id: item.id },
           },
         })
@@ -189,10 +189,10 @@ class Comment extends PureComponent {
           pageSize: page.pageSize,
         })
       },
-      onDeleteItem: id => {
+      onDeleteItem: record => {
         dispatch({
-          type: 'comment/delete',
-          payload: id,
+          type: 'comment/deleteSubComment',
+          payload: record,
         }).then(() => {
           this.handleRefresh({
             page:
@@ -204,7 +204,7 @@ class Comment extends PureComponent {
       },
       onEditItem(item) {
         dispatch({
-          type: 'comment/showModal',
+          type: 'comment/showSubCommentModal',
           payload: {
             modalType: 'update',
             currentItem: item,
@@ -244,11 +244,27 @@ class Comment extends PureComponent {
           // this.handleRefresh()
         })
       },
+      onUpdate: (data) => {
+        dispatch({
+          type: `comment/updateSubComment`,
+          payload: data,
+        }).then(() => { 
+          if(selectedRowKey.length === 1){
+            const id = list[selectedRowKey[0]].id
+            dispatch({
+              type: `comment/queryCommentsSubcomments`,
+              payload: { id },
+            })
+          }
+          // this.handleRefresh()
+        })
+      },
       onCancel() {
         dispatch({
           type: 'comment/hideSubCommentModal',
         })
       },
+      modalType,
     }
   }
 

@@ -21,7 +21,7 @@ class List extends PureComponent {
       confirm({
         title: i18n.t`Are you sure delete this record?`,
         onOk() {
-          onDeleteItem(record.id)
+          onDeleteItem(record)
         },
       })
     } else if (e.key === '3') {
@@ -87,7 +87,6 @@ class List extends PureComponent {
                 menuOptions={[
                   { key: '1', name: i18n.t`Update` },
                   { key: '2', name: i18n.t`Delete` },
-                  { key: '3', name: i18n.t`View this Record` },
                 ]}
               />
             )

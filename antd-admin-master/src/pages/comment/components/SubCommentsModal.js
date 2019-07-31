@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Form, Input, InputNumber, Radio, Modal, Cascader } from 'antd'
 import { Trans, withI18n } from '@lingui/react'
 import city from 'utils/city'
+import moment from 'moment'
 
 const FormItem = Form.Item
 
@@ -18,7 +19,7 @@ const formItemLayout = {
 @Form.create()
 class SubCommentsModal extends PureComponent {
   handleOk = () => {
-    const { item = {}, onOk, form } = this.props
+    const { item = {}, onOk, form, onUpdate, modalType } = this.props
     const { validateFields, getFieldsValue } = form
 
     validateFields(errors => {
@@ -28,9 +29,17 @@ class SubCommentsModal extends PureComponent {
       const data = {
         ...getFieldsValue(),
       };
-      
-      if (item.id) data.id = item.id
-      onOk(data)
+    
+      if (modalType ==='create' && item.id) {
+        data.id = item.id
+        data.timestamp = moment().unix()
+        onOk(data)
+      } else {
+        data.id = item.id
+        data.commentId = item.commentId
+        data.timestamp = item.timestamp
+        onUpdate(data)
+      }
     })
   }
 
@@ -44,16 +53,6 @@ class SubCommentsModal extends PureComponent {
           <FormItem label={i18n.t`text`} hasFeedback {...formItemLayout}>
             {getFieldDecorator('text', {
               initialValue: item.text,
-              rules: [
-                {
-                  required: true,
-                },
-              ],
-            })(<Input />)}
-          </FormItem>
-          <FormItem label={i18n.t`timestamp`} hasFeedback {...formItemLayout}>
-            {getFieldDecorator('timestamp', {
-              initialValue: item.timestamp,
               rules: [
                 {
                   required: true,
